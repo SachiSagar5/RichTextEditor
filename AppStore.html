@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My App Store Dashboard</title>
+  <style>
+    /* Animated Gradient Background */
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      min-height: 100vh;
+      background: linear-gradient(-45deg, #6a11cb, #2575fc, #00c6ff, #0072ff);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+      color: white;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+      animation: fadeInDown 1.2s ease;
+    }
+
+    .app-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .app-card {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0px 6px 18px rgba(0,0,0,0.2);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards;
+    }
+    .app-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0px 10px 25px rgba(0,0,0,0.3);
+    }
+    .app-card h2 {
+      margin: 10px 0;
+      font-size: 1.3rem;
+      color: #222;
+    }
+    .app-card p {
+      color: #555;
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 12px 20px;
+      background: linear-gradient(90deg, #0078ff, #00c6ff);
+      border: none;
+      color: white;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.3s ease;
+      align-self: center;
+    }
+    button:hover {
+      transform: scale(1.08);
+      background: linear-gradient(90deg, #005fcc, #0099ff);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeInDown {
+      from { transform: translateY(-40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      .title {
+        font-size: 1.8rem;
+      }
+      .app-card {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 class="title">🚀 My Personal App Store</h1>
+
+  <div class="app-list">
+    <div class="app-card" style="animation-delay: 0.2s">
+      <h2>Note Pade Plus</h2>
+      <p>Text editor with multi-tab support and local storage persistence.</p>
+      <button onclick="location.href='https://rich-text-editor-beryl.vercel.app/'">▶ Play</button>
+    </div>
+
+    <div class="app-card" style="animation-delay: 0.4s">
+      <h2>📝 Notes</h2>
+      <p>Write and save notes in browser storage.</p>
+      <button onclick="location.href='apps/notes.html'">▶ Play</button>
+    </div>
+
+    <div class="app-card" style="animation-delay: 0.6s">
+      <h2>🎮 Mini Game</h2>
+      <p>A fun little click speed game.</p>
+      <button onclick="location.href='apps/game.html'">▶ Play</button>
+    </div>
+
+    <div class="app-card" style="animation-delay: 0.8s">
+      <h2>✅ Todo List</h2>
+      <p>Track your daily tasks efficiently.</p>
+      <button onclick="location.href='apps/todo.html'">▶ Play</button>
+    </div>
+
+    <div class="app-card" style="animation-delay: 1s">
+      <h2>🌤 Weather</h2>
+      <p>Check current weather updates.</p>
+      <button onclick="location.href='apps/weather.html'">▶ Play</button>
+    </div>
+  </div>
+</body>
+</html>
