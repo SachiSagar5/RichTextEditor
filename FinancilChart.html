@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Financial Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .upload-box {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    input[type="file"] {
+      margin: 10px 0;
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    }
+    .stat {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .label {
+      color: gray;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📊 Financial Dashboard</h1>
+
+  <div class="upload-box">
+    <input type="file" id="upload" accept=".xlsx, .xls">
+    <p>Upload Excel with columns: <b>Date, Income, Expense</b></p>
+  </div>
+
+  <div class="dashboard">
+    <div class="card">
+      <div class="stat" id="totalIncome">₹0</div>
+      <div class="label">Total Income</div>
+    </div>
+    <div class="card">
+      <div class="stat" id="totalExpense">₹0</div>
+      <div class="label">Total Expense</div>
+    </div>
+    <div class="card">
+      <div class="stat" id="totalSavings">₹0</div>
+      <div class="label">Total Savings</div>
+    </div>
+  </div>
+
+  <div class="dashboard">
+    <div class="card">
+      <canvas id="lineChart" height="200"></canvas>
+    </div>
+    <div class="card">
+      <canvas id="barChart" height="200"></canvas>
+    </div>
+    <div class="card">
+      <canvas id="pieChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('upload').addEventListener('change', handleFile);
+
+    function handleFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+        renderDashboard(jsonData);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function renderDashboard(data) {
+      const labels = data.map(row => row.Date);
+      const income = data.map(row => row.Income);
+      const expense = data.map(row => row.Expense);
+
+      const totalIncome = income.reduce((a,b) => a+b, 0);
+      const totalExpense = expense.reduce((a,b) => a+b, 0);
+      const savings = totalIncome - totalExpense;
+
+      document.getElementById('totalIncome').innerText = "₹" + totalIncome.toLocaleString();
+      document.getElementById('totalExpense').innerText = "₹" + totalExpense.toLocaleString();
+      document.getElementById('totalSavings').innerText = "₹" + savings.toLocaleString();
+
+      if (window.lineChartInstance) window.lineChartInstance.destroy();
+      if (window.barChartInstance) window.barChartInstance.destroy();
+      if (window.pieChartInstance) window.pieChartInstance.destroy();
+
+      const ctxLine = document.getElementById('lineChart').getContext('2d');
+      window.lineChartInstance = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: 'Income', data: income, borderColor: 'green', fill: false },
+            { label: 'Expense', data: expense, borderColor: 'red', fill: false }
+          ]
+        }
+      });
+
+      const ctxBar = document.getElementById('barChart').getContext('2d');
+      window.barChartInstance = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: 'Income', data: income, backgroundColor: 'rgba(0, 128, 0, 0.6)' },
+            { label: 'Expense', data: expense, backgroundColor: 'rgba(255, 0, 0, 0.6)' }
+          ]
+        }
+      });
+
+      const ctxPie = document.getElementById('pieChart').getContext('2d');
+      window.pieChartInstance = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+          labels: ['Income', 'Expense', 'Savings'],
+          datasets: [{
+            data: [totalIncome, totalExpense, savings],
+            backgroundColor: ['green', 'red', 'blue']
+          }]
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
